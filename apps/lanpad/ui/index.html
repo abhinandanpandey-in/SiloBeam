@@ -75,7 +75,11 @@
         <div><span style="color:var(--accent);">GITHUB:</span> github.com/abhinandanpandey-in</div>
         <div><span style="color:var(--accent);">WEB:</span> abhinandanpandey-in-github-io.pages.dev</div>
       </div>
+      <div id="update-status" style="font-size:11px;color:var(--muted);min-height:16px;text-align:center;">
+        v0.1.0 &bull; Offline Mode
+      </div>
       <div class="row" style="margin-top:4px;">
+        <button class="btn" id="check-update">CHECK UPDATE</button>
         <button class="btn" id="copy-gh">COPY GITHUB</button>
         <button class="btn" id="close-about">CLOSE</button>
       </div>
@@ -204,6 +208,35 @@
     const aboutModal = document.getElementById('about-modal');
     document.getElementById('open-about').onclick = () => aboutModal.classList.add('open');
     document.getElementById('close-about').onclick = () => aboutModal.classList.remove('open');
+
+    const CURRENT_VERSION = 'v0.1.0';
+    document.getElementById('check-update').onclick = async (e) => {
+      const btn = e.target;
+      const status = document.getElementById('update-status');
+      btn.disabled = true;
+      status.style.color = 'var(--muted)';
+      status.textContent = 'Checking GitHub Releases...';
+      try {
+        const res = await fetch('https://api.github.com/repos/abhinandanpandey-in/SiloBeam/releases/latest', {
+          headers: { 'Accept': 'application/vnd.github+json' }
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const latest = data.tag_name || CURRENT_VERSION;
+        if (latest !== CURRENT_VERSION) {
+          status.style.color = 'var(--accent)';
+          status.innerHTML = `Update <b>${latest}</b> available — <a href="${data.html_url}" target="_blank" style="color:var(--accent);text-decoration:underline;">Download</a>`;
+        } else {
+          status.style.color = 'var(--accent)';
+          status.textContent = `Up to date (${CURRENT_VERSION})`;
+        }
+      } catch (err) {
+        status.style.color = '#f85149';
+        status.textContent = 'Offline or unreachable';
+      } finally {
+        btn.disabled = false;
+      }
+    };
     document.getElementById('copy-gh').onclick = (e) => {
       navigator.clipboard.writeText('https://github.com/abhinandanpandey-in');
       e.target.textContent = 'COPIED';
