@@ -1,0 +1,21 @@
+# Rust & Cargo
+target/
+**/*.rs.bk
+
+# Tauri & Android build artifacts
+**/gen/android/app/build/
+**/gen/android/.gradle/
+**/gen/android/local.properties
+**/gen/android/**/*.apk
+**/gen/android/**/*.aab
+**/gen/android/**/jniLibs/
+*.keystore
+*.jks
+
+# Local DBs, temp files & OS noise
+*.db
+*.db-shm
+*.db-wal
+logo_real.png
+.DS_Store
+Thumbs.db
